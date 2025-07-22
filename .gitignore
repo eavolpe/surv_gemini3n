@@ -1,1 +1,6 @@
 models/secrets.py
+videos
+frames
+local_secrets.py
+temp
+__pycache__
