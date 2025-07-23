@@ -1,0 +1,16 @@
+<div class="col-md-6 col-lg-4 mb-4" id="camera-{{ camera_id }}"
+     hx-get="/camera/{{ camera_id }}/frame"
+     hx-trigger="every 2s"
+     hx-swap="outerHTML">
+    <div class="card shadow-sm">
+        <img src="{{ image_url }}" class="card-img-top" alt="Camera Feed">
+        <div class="card-body">
+            <h5 class="card-title">Camera #{{ camera_id }}</h5>
+            <p class="card-text text-muted">{{ description }}</p>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-outline-primary btn-sm">Pause</button>
+                <span class="badge bg-success">Live</span>
+            </div>
+        </div>
+    </div>
+</div>

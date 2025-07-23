@@ -1,3 +1,7 @@
+## Emilio - Rafa 50% 
+
+
+
 ## AI Residential Security and Government response 
 ## Run the following code to install ollama
 https://ai.google.dev/gemma/docs/integrations/ollama
@@ -45,3 +49,7 @@ Ideas:
 * http://insecam.org/en/view/995623/
 * https://huggingface.co/google/gemma-3n-E4B-it
 * https://cloud.google.com/run/docs/tutorials/gpu-gemma-with-ollama
+
+
+
+## Dos tabs 
