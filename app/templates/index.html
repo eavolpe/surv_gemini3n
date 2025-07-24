@@ -11,36 +11,35 @@
     {% for cam in cameras[i:i+2] %}
     <div class="col-md-6">
         <div class="card shadow-sm">
-            <!-- Streamed image -->
             <img
                 src="/camera/{{ cam.id }}/stream"
                 alt="Camera {{ cam.name }} Feed"
                 class="img-fluid rounded"
             />
-            <div class="card-body">
-                <h5 class="card-title">Camera #{{ cam.id }}</h5>
-                <p class="card-text text-muted">{{ cam.description }}</p>
+        <div class="card-body">
+            <h5 class="card-title">Camera #{{ cam.id }}</h5>
+            <p class="card-text text-muted">{{ cam.description }}</p>
 
-                <!-- Streaming Text Box -->
-                <div id="stream-box-{{ cam.id }}"
-                     class="border rounded p-2 my-2 bg-light"
-                     style="height: 50px; font-family: monospace; overflow-y: auto;">
-                </div>
-
-                <div class="d-flex justify-content-between">
-                <div
-                hx-ext="sse"
-                sse-connect="/camera/{{ cam.id }}/text-stream"
-                sse-event="message"
-                hx-swap="beforeend"
-                class="text-feed"
-                ></div>                    <span class="badge bg-success">Live</span>
-                </div>
+            <!-- SSE target and connector on the same div -->
+            <div
+            id="stream-box-{{ cam.id }}"
+            hx-ext="sse"
+            sse-connect="/stream_text/{{ cam.id }}"
+            sse-swap="innerHTML"
+            >
+            <p>a</p>
+            <!-- This will get updated by SSE -->
             </div>
+
+            <div class="d-flex justify-content-between mt-3">
+            <span class="badge bg-success">Live</span>
+            </div>
+        </div>
         </div>
     </div>
     {% endfor %}
 </div>
 {% endfor %}
+
 
 {% endblock %}
