@@ -5,41 +5,40 @@
 {% block content %}
 <h1 class="mb-4">Remote Camera Interface</h1>
 
-<!-- Loop through cameras two at a time -->
-{% for i in range(0, cameras|length, 2) %}
-<div class="row g-4 mb-3">
-    {% for cam in cameras[i:i+2] %}
-    <div class="col-md-6">
-        <div class="card shadow-sm">
-            <img
-                src="/camera/{{ cam.id }}/stream"
-                alt="Camera {{ cam.name }} Feed"
-                class="img-fluid rounded"
-            />
-        <div class="card-body">
-            <h5 class="card-title">Camera #{{ cam.id }}</h5>
-            <p class="card-text text-muted">{{ cam.description }}</p>
+<!-- Single SSE wrapper container -->
+<div id="camera-stream-container"
+     hx-ext="sse"
+     sse-connect="/camera/all/stream_text"
+     style="display: contents;">
 
-            <!-- SSE target and connector on the same div -->
-            <div
-            id="stream-box-{{ cam.id }}"
-            hx-ext="sse"
-            sse-connect="/stream_text/{{ cam.id }}"
-            sse-swap="innerHTML"
-            >
-            <p>a</p>
-            <!-- This will get updated by SSE -->
-            </div>
+    <!-- Loop through cameras two at a time -->
+    {% for i in range(0, cameras|length, 2) %}
+    <div class="row g-4 mb-3">
+        {% for cam in cameras[i:i+2] %}
+        <div class="col-md-6">
+            <div class="card shadow-sm">
+                <img
+                    src="/camera/{{ cam.id }}/stream"
+                    alt="Camera {{ cam.name }} Feed"
+                    class="img-fluid rounded"
+                />
+                <div class="card-body">
+                    <h5 class="card-title">Camera #{{ cam.id }}</h5>
+                    <p class="card-text text-muted">{{ cam.description }}</p>
 
-            <div class="d-flex justify-content-between mt-3">
-            <span class="badge bg-success">Live</span>
+                    <!-- Now only sse-event and sse-swap per camera -->
+                <div sse-swap="cam-{{ cam.id }}">Waiting for updates...</div>
+
+                </div>
+
+                <div class="d-flex justify-content-between mt-3">
+                    <span class="badge bg-success">Live</span>
+                </div>
             </div>
         </div>
-        </div>
+        {% endfor %}
     </div>
     {% endfor %}
 </div>
-{% endfor %}
-
 
 {% endblock %}

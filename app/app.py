@@ -64,72 +64,47 @@ async def stream_camera(camera_id: int):
 
 
 
+camera_ids = [1, 2, 3, 4]
 
-# async def event_generator(cam_id: int):
-#     count = 0
-#     while True:
-#         count += 1
-#         yield f"event: sse\ndata: <span>Token {count}<br/></span>\n\n"
-#         await asyncio.sleep(1)
+# Simulate an incremental word-by-word stream
+async def stream_message(message: str, delay: float = 0.3, event_name: str = "message"):
+    words = message.split()
+    sentence_so_far = ""
+    for word in words:
+        sentence_so_far += word + " "
+        yield f"event: {event_name}\ndata: {sentence_so_far.strip()}\n\n"
+        await asyncio.sleep(delay)
+    await asyncio.sleep(1)  # Optional pause
 
-# @app.get("/stream_text/{cam_id}")
-# async def sse_endpoint(request: Request, cam_id: int):
-#     async def event_stream():
-#         async for line in event_generator(cam_id):
-#             if await request.is_disconnected():
-#                 break
-#             yield line
-#     return StreamingResponse(event_stream(), media_type="text/event-stream")
-
-
-
-# async def token_stream():
-#     # Simulated tokens from an LLM response, one by one
-#     tokens = ["Hello", ", ", "this", " ", "is", " ", "a", " ", "streamed", " ", "response", "."]
-#     for token in tokens:
-#         # SSE event with event: sse and data as token
-#         yield f"event: sse\ndata: {token}\n\n"
-#         await asyncio.sleep(0.5)  # simulate delay between tokens
-#     # Keep connection alive (optional)
-#     while True:
-#         await asyncio.sleep(10)
-
-# @app.get("/stream_text/123")
-# async def stream_text(request: Request):
-#     async def event_generator():
-#         async for message in token_stream():
-#             if await request.is_disconnected():
-#                 break
-#             yield message
-
-#     return StreamingResponse(event_generator(), media_type="text/event-stream")
-
-
-
-
+# Generate events for all cameras
 async def event_generator():
-    messages = [
-        "Welcome to the chatroom!",
-        "User123 joined.",
-        "User123: Hello everyone!",
-        "User456 joined.",
-        "User456: Hi User123!",
-    ]
-    for msg in messages:
-        yield f"data: {msg}\n\n"
-        await asyncio.sleep(3)
+    example_messages = {
+        1: "Camera 1 detected motion near the door.",
+        2: "Camera 2 is operating normally.",
+        3: "Camera 3 lost connection briefly.",
+        4: "Camera 4 temperature threshold exceeded."
+    }
+
     while True:
-        await asyncio.sleep(10)  # keep connection alive
+        for cam_id in camera_ids:
+            message = example_messages[cam_id]
+            event_name = f"cam-{cam_id}"
+            async for update in stream_message(message, delay=0.2, event_name=event_name):
+                yield update
+        await asyncio.sleep(2)  # Delay before starting next loop
+        
 
-@app.get("/chatroom")
-async def chatroom(request: Request):
+@app.get("/camera/all/stream_text")
+async def camera_text_stream(request: Request):
     async def event_stream():
-        async for message in event_generator():
-            if await request.is_disconnected():
-                break
-            yield message
+        try:
+            async for message in event_generator():
+                if await request.is_disconnected():
+                    break
+                yield message
+        except asyncio.CancelledError:
+            pass
     return StreamingResponse(event_stream(), media_type="text/event-stream")
-
 
 
 # Optional: Start server if running standalone (not needed in Cloud Run)
@@ -137,4 +112,4 @@ if __name__ == "__main__":
     import uvicorn
     
     #uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)),workers=10)
-    uvicorn.run("app:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), workers=1)
+    uvicorn.run("app:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), workers=4)
