@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+
+{% block title %}GemmaVision | Real-Time Incident Intelligence{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="text-center mb-5">
+  <h2 class="display-3 fw-bold">
+    <span class="text-primary">Gemma</span><span class="text-danger">Vision</span>
+  </h2>    <p class="lead text-muted">Real-Time Incident Intelligence for Smarter, Safer Environments</p>
+  </div>
+
+  <div class="row gy-5">
+
+    <!-- Introduction -->
+    <div class="col-12">
+      <h2><i class="bi bi-eye-fill text-primary me-2"></i>Introduction</h2>
+      <p>
+        <strong>GemmaVision</strong> is a real-time incident intelligence platform enabling governments and organizations to monitor, detect, and respond to critical events via live video. It combines advanced AI vision models, streaming infrastructure, and dynamic dashboards to create a powerful situational awareness system.
+      </p>
+    </div>
+
+    <!-- Frontend Architecture -->
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h4 class="card-title"><i class="bi bi-layout-text-window text-success me-2"></i>Frontend Architecture</h4>
+          <ul class="mb-0">
+            <li><strong>Bootstrap 5 UI:</strong> Responsive, mobile-first design</li>
+            <li><strong>Camera Grid:</strong> Real-time feeds in Bootstrap cards</li>
+            <li><strong>Server-Sent Events:</strong> Instant incident updates</li>
+            <li><strong>HTMX:</strong> Lightweight interactivity and polling</li>
+            <li><strong>Incident Badging:</strong> Color-coded for clarity</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Architecture -->
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h4 class="card-title"><i class="bi bi-diagram-3-fill text-warning me-2"></i>System Architecture</h4>
+          <ul class="mb-0">
+            <li><strong>RTSP/HTTP Ingestion:</strong> For live video feeds</li>
+            <li><strong>AI Microservices:</strong> Modular detection APIs</li>
+            <li><strong>Event Bus:</strong> Kafka or Redis Pub/Sub</li>
+            <li><strong>PostgreSQL + Redis:</strong> For fast, indexed storage</li>
+            <li><strong>API Gateway:</strong> Handles traffic and routing</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gemini Vision -->
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h4 class="card-title"><i class="bi bi-cpu-fill text-danger me-2"></i>Gemini Vision Engine</h4>
+          <ul class="mb-0">
+            <li><strong>Gemini 3n:</strong> Multi-modal video reasoning</li>
+            <li><strong>Impact Detection:</strong> Explosions, crashes, fights</li>
+            <li><strong>Unsloth Inference:</strong> High-speed stream processing</li>
+            <li><strong>Language Support:</strong> Multi-lingual summaries</li>
+            <li><strong>Temporal Modeling:</strong> Frame-to-frame action tracking</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Datasets -->
+    <div class="col-md-6">
+      <div class="card shadow-sm border-0 h-100">
+        <div class="card-body">
+          <h4 class="card-title"><i class="bi bi-collection-play text-info me-2"></i>Datasets Used</h4>
+          <ul class="mb-0">
+            <li><strong>UCF Crime:</strong> Real-world crime surveillance</li>
+            <li><strong>AI City Challenge:</strong> Vehicle & traffic incidents</li>
+            <li><strong>Partner Footage:</strong> Custom annotated feeds</li>
+            <li><strong>Synthetic Video:</strong> Simulated rare events</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Future Directions -->
+    <div class="col-12">
+      <h2><i class="bi bi-lightbulb-fill text-secondary me-2"></i>Future Directions</h2>
+      <ul>
+        <li>On-device AI deployment for edge computing</li>
+        <li>Integration with emergency alert protocols</li>
+        <li>Advanced crowd behavior detection</li>
+        <li>Multimodal fusion: video, audio, sensor inputs</li>
+        <li>Customizable dashboards for verticals (retail, transit, etc.)</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="mt-5 text-muted small text-center">
+    &copy; 2025 GemmaVision Team. All rights reserved.
+  </footer>
+</div>
+{% endblock %}

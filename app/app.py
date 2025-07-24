@@ -6,6 +6,8 @@ import cv2
 import os
 import asyncio
 import time 
+import random
+
 
 app = FastAPI()
 
@@ -25,6 +27,11 @@ async def index(request: Request):
         "request": request,
         "cameras": CAMERAS
     })
+
+@app.get("/technical_writeup", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("technical_writeup.html", {
+        "request": request })
 
 
 @app.get("/stream_text_test", response_class=HTMLResponse)
@@ -105,6 +112,45 @@ async def camera_text_stream(request: Request):
         except asyncio.CancelledError:
             pass
     return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+
+
+STATUS_OPTIONS = [
+    {
+        "label": "Burglary",
+        "description": "Suspected unlawful entry with intent to steal.",
+        "type": "warning",
+        "action": "Call Security",
+        "icon": "bi-shield-lock",
+        "class": "btn-outline-primary"
+    },
+    {
+        "label": "Shooting",
+        "description": "Possible use of firearm detected.",
+        "type": "danger",
+        "action": "Call Police",
+        "icon": "bi-shield-fill-exclamation",
+        "class": "btn-outline-danger"
+    },
+    {
+        "label": "Normal",
+        "description": "No suspicious activity.",
+        "type": "secondary",
+        "action": None,
+        "icon": "",
+        "class": ""
+    }
+]
+
+@app.get("/camera/{cam_id}/status", response_class=HTMLResponse)
+async def get_camera_status(request: Request, cam_id: int):
+    status = random.choice(STATUS_OPTIONS)  # Replace with real detection logic
+    return templates.TemplateResponse("camera_status.html", {
+        "request": request,
+        "cam_id": cam_id,
+        "status": status
+    })
 
 
 # Optional: Start server if running standalone (not needed in Cloud Run)

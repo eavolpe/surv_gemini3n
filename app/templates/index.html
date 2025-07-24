@@ -1,38 +1,67 @@
 {% extends "base.html" %}
 
-{% block title %}Home - Remote Camera Viewer{% endblock %}
+{% block title %} GemmaVision | Real-Time Incident Intelligence{% endblock %}
 
 {% block content %}
-<h1 class="mb-4">Remote Camera Interface</h1>
+<div class="text-center my-5">
+  <h1 class="display-3 fw-bold">
+    <span class="text-primary">Gemma</span><span class="text-danger">Vision</span>
+  </h1>
+  <p class="lead fst-italic text-muted mt-2">
+    Empowering governments and private cameras to respond to critical events in real time.
+  </p>
 
-<!-- Single SSE wrapper container -->
+  <div class="mt-4">
+    <span class="badge bg-danger me-2">Abuse</span>
+    <span class="badge bg-warning text-dark me-2">Burglary</span>
+    <span class="badge bg-info text-dark me-2">Robbery</span>
+    <span class="badge bg-success me-2">Stealing</span>
+    <span class="badge bg-dark me-2">Shooting</span>
+    <span class="badge bg-primary me-2">Shoplifting</span>
+    <span class="badge bg-secondary me-2">Assault</span>
+    <span class="badge bg-danger me-2">Fighting</span>
+    <span class="badge bg-warning text-dark me-2">Arson</span>
+    <span class="badge bg-secondary me-2">Explosion</span>
+    <span class="badge bg-primary me-2">Traffic Accident</span>
+  </div>
+
+  <hr class="my-4">
+
 <div id="camera-stream-container"
      hx-ext="sse"
      sse-connect="/camera/all/stream_text"
      style="display: contents;">
 
-    <!-- Loop through cameras two at a time -->
     {% for i in range(0, cameras|length, 2) %}
     <div class="row g-4 mb-3">
         {% for cam in cameras[i:i+2] %}
         <div class="col-md-6">
-            <div class="card shadow-sm">
+            <div class="card shadow-sm border-0">
                 <img
                     src="/camera/{{ cam.id }}/stream"
                     alt="Camera {{ cam.name }} Feed"
-                    class="img-fluid rounded"
+                    class="img-fluid rounded-top"
+                    style="height: 250px; object-fit: cover; background-color: #f0f0f0;"
                 />
-                <div class="card-body">
-                    <h5 class="card-title">Camera #{{ cam.id }}</h5>
-                    <p class="card-text text-muted">{{ cam.description }}</p>
 
-                    <!-- Now only sse-event and sse-swap per camera -->
-                <div sse-swap="cam-{{ cam.id }}">Waiting for updates...</div>
-
+                <div class="card-body d-flex justify-content-between align-items-start flex-wrap">
+                    <div>
+                        <h5 class="card-title mb-1">Camera #{{ cam.id }}</h5>
+                        <p class="card-text text-muted mb-2">{{ cam.name }}</p>
+                        <div sse-swap="cam-{{ cam.id }}" class="text-secondary small">Waiting for updates...</div>
+                    </div>
+                                <div
+                    id="status-{{ cam.id }}"
+                    hx-get="/camera/{{ cam.id }}/status"
+                    hx-trigger="every 5s"
+                    hx-swap="innerHTML"
+                    class="mt-2"
+                >
+                    <small class="text-muted">Checking status...</small>
                 </div>
-
-                <div class="d-flex justify-content-between mt-3">
-                    <span class="badge bg-success">Live</span>
+                    <div class="mt-2">
+                        <span class="badge bg-success">Live</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -40,5 +69,4 @@
     </div>
     {% endfor %}
 </div>
-
 {% endblock %}
