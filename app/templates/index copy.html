@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Remote Camera Viewer{% endblock %}
+
+{% block content %}
+<h1 class="mb-4">Remote Camera Interface</h1>
+
+<!-- Loop through cameras two at a time -->
+{% for i in range(0, cameras|length, 2) %}
+<div class="row g-4 mb-3">
+    {% for cam in cameras[i:i+2] %}
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <!-- Streamed image -->
+            <img
+                src="/camera/{{ cam.id }}/stream"
+                alt="Camera {{ cam.name }} Feed"
+                class="img-fluid rounded"
+            />
+            <div class="card-body">
+                <h5 class="card-title">Camera #{{ cam.id }}</h5>
+                <p class="card-text text-muted">{{ cam.description }}</p>
+
+                <!-- Streaming Text Box -->
+                <div id="stream-box-{{ cam.id }}"
+                     class="border rounded p-2 my-2 bg-light"
+                     style="height: 50px; font-family: monospace; overflow-y: auto;">
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button class="btn btn-outline-primary btn-sm" onclick="toggleStream({{ cam.id }})">Pause</button>
+                    <span class="badge bg-success">Live</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endfor %}
+
+<script>
+  const sources = {};  // track EventSources for pause/resume
+
+  function startStream(boxId, camId) {
+    const box = document.getElementById(boxId);
+    const source = new EventSource(`/stream/${camId}`);
+
+    source.onmessage = function(event) {
+      if (event.data === "[[CLEAR]]") {
+        box.textContent = '';
+      } else {
+        box.textContent += event.data + ' ';
+        box.scrollTop = box.scrollHeight;
+      }
+    };
+
+    source.onerror = function(err) {
+      console.error(`Stream for cam ${camId} failed:`, err);
+      source.close();
+    };
+
+    sources[camId] = source;
+  }
+
+  function stopStream(camId) {
+    if (sources[camId]) {
+      sources[camId].close();
+      delete sources[camId];
+    }
+  }
+
+  function toggleStream(camId) {
+    const boxId = `stream-box-${camId}`;
+    if (sources[camId]) {
+      stopStream(camId);
+      document.querySelector(`#stream-box-${camId}`).textContent += "\n[Stream paused]";
+    } else {
+      startStream(boxId, camId);
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const cameraIds = {{ cameras | map(attribute='id') | list | tojson }};
+    for (const id of cameraIds) {
+      startStream(`stream-box-${id}`, id);
+    }
+  });
+</script>
+{% endblock %}

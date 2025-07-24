@@ -3,8 +3,12 @@
      hx-trigger="every 2s"
      hx-swap="outerHTML">
     <div class="card shadow-sm">
-        <img src="{{ image_url }}" class="card-img-top" alt="Camera Feed">
-        <div class="card-body">
+            <img
+                src="/camera/{{ cam.id }}/stream"
+                alt="Camera {{ cam.name }} Feed"
+                class="img-fluid rounded"
+            />
+            </div>        <div class="card-body">
             <h5 class="card-title">Camera #{{ camera_id }}</h5>
             <p class="card-text text-muted">{{ description }}</p>
             <div class="d-flex justify-content-between">
