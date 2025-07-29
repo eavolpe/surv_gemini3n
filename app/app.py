@@ -7,11 +7,36 @@ import os
 import asyncio
 import time 
 import random
+from contextlib import asynccontextmanager
+import faiss
+import numpy as np
 
 
 app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Load data
+    vectors = np.load("image_embeddings_search.npy").astype('float32')
+    doc_names = np.load("doc_names.npy")
+
+    # Initialize FAISS index
+    dim = vectors.shape[1]
+    index = faiss.IndexFlatL2(dim)
+    index.add(vectors)
+
+    # Store in app state
+    app.state.faiss = {
+        "index": index,
+        "doc_names": doc_names
+    }
+
+    print(f"Loaded {len(doc_names)} documents into FAISS index.")
+    yield
+    print("App shutting down...")
+
 
 # Simulated list of available cameras
 CAMERAS = [
@@ -32,6 +57,14 @@ async def index(request: Request):
 async def index(request: Request):
     return templates.TemplateResponse("technical_writeup.html", {
         "request": request })
+
+
+
+@app.get("/search", response_class=HTMLResponse)
+async def index(request: Request):
+    return templates.TemplateResponse("search.html", {
+        "request": request })
+
 
 
 @app.get("/stream_text_test", response_class=HTMLResponse)

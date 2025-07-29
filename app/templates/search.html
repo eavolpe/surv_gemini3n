@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}GemmaVision | Search Incidents & Intelligence{% endblock %}
+
+{% block content %}
+<div class="text-center my-5">
+  <h1 class="display-3 fw-bold">
+    <span class="text-primary">Gemma</span><span class="text-danger">Vision</span>
+  </h1>
+  <p class="lead fst-italic text-muted mt-2">
+    Discover real-time incidents across networks of smart cameras.
+  </p>
+
+  <!-- Search Interface -->
+    <div class="col-md-8">
+      <input 
+        id="search-query"
+        type="text" 
+        name="query" 
+        class="form-control form-control-lg" 
+        placeholder="Search by incident type, location, or camera ID..."
+      >
+    </div>
+
+    <!-- Dropdown of predefined search queries -->
+    <div class="col-md-3">
+      <select id="search-suggestions" class="form-select form-select-lg">
+        <option value="">Choose a suggestion</option>
+        <option value="Man with red hat">Man with red hat</option>
+        <option value="Car accident near 5th Ave">Car accident near 5th Ave</option>
+        <option value="Person running">Person running</option>
+        <option value="Explosion in parking lot">Explosion in parking lot</option>
+        <option value="Shoplifting at grocery store">Shoplifting at grocery store</option>
+        <option value="Fighting in subway">Fighting in subway</option>
+      </select>
+    </div>
+
+  <!-- Incident Category Badges -->
+  <div class="mt-4">
+    <span class="badge bg-danger me-2">Abuse</span>
+    <span class="badge bg-warning text-dark me-2">Burglary</span>
+    <span class="badge bg-info text-dark me-2">Robbery</span>
+    <span class="badge bg-success me-2">Stealing</span>
+    <span class="badge bg-dark me-2">Shooting</span>
+    <span class="badge bg-primary me-2">Shoplifting</span>
+    <span class="badge bg-secondary me-2">Assault</span>
+    <span class="badge bg-danger me-2">Fighting</span>
+    <span class="badge bg-warning text-dark me-2">Arson</span>
+    <span class="badge bg-secondary me-2">Explosion</span>
+    <span class="badge bg-primary me-2">Traffic Accident</span>
+  </div>
+
+  <hr class="my-4">
+
+  <!-- Search Results Area -->
+  <div id="search-results" class="container">
+    <!-- Populated dynamically via HTMX -->
+  </div>
+</div>
+{% endblock %}

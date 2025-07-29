@@ -4,3 +4,7 @@ frames
 local_secrets.py
 temp
 __pycache__
+kaggle.json
+vector_search/sampled_frames
+vector_search/image_embeddings.npy
+vector_search/image_embeddings_search.npy
