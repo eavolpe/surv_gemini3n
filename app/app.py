@@ -5,37 +5,42 @@ from fastapi.responses import StreamingResponse
 import cv2
 import os
 import asyncio
-import time 
 import random
 from contextlib import asynccontextmanager
 import faiss
 import numpy as np
+from fastapi.staticfiles import StaticFiles
 
 
-app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
+
+vector_dbs = {}
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load data
-    vectors = np.load("image_embeddings_search.npy").astype('float32')
-    doc_names = np.load("doc_names.npy")
+    data_dict = np.load("../vector_search/image_embeddings.npy", allow_pickle=True).item()
+
+    # Extract filenames and vectors
+    filenames = list(data_dict.keys())
+    vectors = np.stack([data_dict[name] for name in filenames]).astype('float32')
 
     # Initialize FAISS index
+    norms = np.linalg.norm(vectors, axis=1, keepdims=True)
+    vectors = vectors / norms
+
+    # Build FAISS index with Inner Product (works like cosine similarity now)
     dim = vectors.shape[1]
-    index = faiss.IndexFlatL2(dim)
+    index = faiss.IndexFlatIP(dim)
     index.add(vectors)
-
+    vector_dbs['IndexFlatIP'] = index
+    vector_dbs['docs'] = filenames
     # Store in app state
-    app.state.faiss = {
-        "index": index,
-        "doc_names": doc_names
-    }
-
-    print(f"Loaded {len(doc_names)} documents into FAISS index.")
     yield
     print("App shutting down...")
+app = FastAPI(lifespan=lifespan)
+app.mount("/vector_search/sampled_frames", StaticFiles(directory='../vector_search/sampled_frames'), name="sampled_frames")
 
 
 # Simulated list of available cameras
@@ -183,6 +188,93 @@ async def get_camera_status(request: Request, cam_id: int):
         "request": request,
         "cam_id": cam_id,
         "status": status
+    })
+
+
+@app.get("/search_images", response_class=HTMLResponse)
+async def search(request: Request, query: str = ""):
+    if query == 'traffic cones and a street person in motorcycle crossing':
+        check_dict = np.load("../vector_search/image_embeddings_search.npy", allow_pickle=True).item()
+        embds = check_dict['Abuse_Abuse010_x264_frame322.jpg']
+
+        # Normalize the query vector
+        query_vector = embds.reshape(1, -1)
+        norm = np.linalg.norm(query_vector, axis=1, keepdims=True)
+        query_vector = query_vector / norm
+
+        # Number of top results to retrieve
+        k = 10
+        distances, indices = vector_dbs['IndexFlatIP'].search(query_vector, k)
+
+        results = []
+        for i in range(k):
+            score = f"{distances[0][i]}"
+            image_filename = vector_dbs['docs'][indices[0][i]]
+            path = f"/vector_search/sampled_frames/{image_filename}"
+            print(path)
+            results.append({'image_path': path, "score": score})
+
+        return templates.TemplateResponse("search_card.html", {
+            "request": request,
+            "results": results
+        })
+    if query == 'inside of home picture of jesus open door':
+        check_dict = np.load("../vector_search/image_embeddings_search.npy", allow_pickle=True).item()
+        embds = check_dict['Abuse_Abuse001_x264_frame1128.jpg']
+
+        # Normalize the query vector
+        query_vector = embds.reshape(1, -1)
+        norm = np.linalg.norm(query_vector, axis=1, keepdims=True)
+        query_vector = query_vector / norm
+
+        # Number of top results to retrieve
+        k = 10
+        distances, indices = vector_dbs['IndexFlatIP'].search(query_vector, k)
+
+        results = []
+        for i in range(k):
+            score = f"{distances[0][i]}"
+            image_filename = vector_dbs['docs'][indices[0][i]]
+            path = f"/vector_search/sampled_frames/{image_filename}"
+            print(path)
+            results.append({'image_path': path, "score": score})
+
+        return templates.TemplateResponse("search_card.html", {
+            "request": request,
+            "results": results
+        })
+    if query == 'a lot of cars in a street blocking':
+        check_dict = np.load("../vector_search/image_embeddings_search.npy", allow_pickle=True).item()
+        embds = check_dict['Arrest_Arrest017_x264_frame2655.jpg']
+
+        # Normalize the query vector
+        query_vector = embds.reshape(1, -1)
+        norm = np.linalg.norm(query_vector, axis=1, keepdims=True)
+        query_vector = query_vector / norm
+
+        # Number of top results to retrieve
+        k = 10
+        distances, indices = vector_dbs['IndexFlatIP'].search(query_vector, k)
+
+        results = []
+        for i in range(k):
+            score = f"{distances[0][i]}"
+            image_filename = vector_dbs['docs'][indices[0][i]]
+            path = f"/vector_search/sampled_frames/{image_filename}"
+            print(path)
+            results.append({'image_path': path, "score": score})
+
+        return templates.TemplateResponse("search_card.html", {
+            "request": request,
+            "results": results
+        })
+
+
+
+
+    # Fallback if query doesn't match
+    return templates.TemplateResponse("error_div.html", {
+        "request": request,
     })
 
 

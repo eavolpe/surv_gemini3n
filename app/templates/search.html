@@ -12,28 +12,30 @@
   </p>
 
   <!-- Search Interface -->
-    <div class="col-md-8">
+  <div class="row justify-content-center">
+    <div class="col-md-8 input-group input-group-lg">
       <input 
         id="search-query"
         type="text" 
         name="query" 
-        class="form-control form-control-lg" 
-        placeholder="Search by incident type, location, or camera ID..."
+        class="form-control" 
+        list="search-suggestions"
+        placeholder="Describe what you’re looking for — like an event, place, or what’s happening in the scene."
+        required
       >
+      <button class="btn btn-outline-primary" id="search-button" hx-get="/search_images" hx-target="#search-results" hx-include="#search-query">
+        <i class="bi bi-search"></i> Search
+      </button>
     </div>
-
-    <!-- Dropdown of predefined search queries -->
-    <div class="col-md-3">
-      <select id="search-suggestions" class="form-select form-select-lg">
-        <option value="">Choose a suggestion</option>
-        <option value="Man with red hat">Man with red hat</option>
-        <option value="Car accident near 5th Ave">Car accident near 5th Ave</option>
-        <option value="Person running">Person running</option>
-        <option value="Explosion in parking lot">Explosion in parking lot</option>
-        <option value="Shoplifting at grocery store">Shoplifting at grocery store</option>
-        <option value="Fighting in subway">Fighting in subway</option>
-      </select>
-    </div>
+  </div>
+  <p class="text-muted small mt-2 text-center">
+    Note: Some potentially sensitive or dangerous results have been intentionally excluded for safety.
+  </p>
+  <datalist id="search-suggestions">
+    <option value="traffic cones and a street person in motorcycle crossing">
+    <option value="inside of home picture of jesus open door">
+    <option value="a lot of cars in a street blocking">
+  </datalist>
 
   <!-- Incident Category Badges -->
   <div class="mt-4">
@@ -53,8 +55,8 @@
   <hr class="my-4">
 
   <!-- Search Results Area -->
-  <div id="search-results" class="container">
-    <!-- Populated dynamically via HTMX -->
+  <div id="search-results" class="row g-4 mt-4">
+    <!-- Dynamically populated with image cards -->
   </div>
 </div>
 {% endblock %}
