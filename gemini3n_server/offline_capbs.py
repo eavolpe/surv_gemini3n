@@ -71,14 +71,6 @@ payload = {
     "images": images_base64
 }
 
-# Save to file for inspection
-with open("ollama_payload.json", "w") as f:
-    json.dump(payload, f, indent=2)
-
-# Send with curl
-import json
-
-# Send with curl
 
 start_time = time.time()
 
