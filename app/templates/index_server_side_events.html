@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %} GemmaVision | Real-Time Incident Intelligence{% endblock %}
+
+{% block content %}
+<div class="text-center my-5">
+  <h1 class="display-3 fw-bold">
+    <span class="text-primary">Gemma</span><span class="text-danger">Vision</span>
+  </h1>
+  <p class="lead fst-italic text-muted mt-2">
+    Empowering governments and private cameras to respond to critical events in real time.
+  </p>
+
+  <div class="mt-4">
+    <span class="badge bg-danger me-2">Abuse</span>
+    <span class="badge bg-warning text-dark me-2">Burglary</span>
+    <span class="badge bg-info text-dark me-2">Robbery</span>
+    <span class="badge bg-success me-2">Stealing</span>
+    <span class="badge bg-dark me-2">Shooting</span>
+    <span class="badge bg-primary me-2">Shoplifting</span>
+    <span class="badge bg-secondary me-2">Assault</span>
+    <span class="badge bg-danger me-2">Fighting</span>
+    <span class="badge bg-warning text-dark me-2">Arson</span>
+    <span class="badge bg-secondary me-2">Explosion</span>
+    <span class="badge bg-primary me-2">Traffic Accident</span>
+  </div>
+
+  <p class="text-muted small mt-2 text-center">
+    Note: Some potentially sensitive or dangerous results have been intentionally excluded for safety.
+  </p>
+  <p class="text-muted small text-left">
+    Public live camera feeds are analyzed in real time by our deployed multimodal AI model powered by Gemma 3n.
+  </p>
+  <p class="text-muted small text-left">
+    We use cameras from publicly available and legally authorized projects.
+  </p>
+  <hr class="my-4">
+
+<div id="camera-stream-container"
+     hx-ext="sse"
+     sse-connect="/camera/all/stream_text"
+     style="display: contents;">
+
+    {% for i in range(0, cameras|length, 2) %}
+    <div class="row g-4 mb-3">
+        {% for cam in cameras[i:i+2] %}
+        <div class="col-md-6">
+            <div class="card shadow-sm border-0">
+                <img
+                    src="/camera/{{ cam.id }}/image"
+                    alt="Camera {{ cam.name }} Feed"
+                    class="img-fluid rounded-top"
+                    style="height: 250px; object-fit: cover; background-color: #f0f0f0;"
+                />
+
+                <div class="card-body d-flex justify-content-between align-items-start flex-wrap">
+                    <div>
+                        <h5 class="card-title mb-1">{{ cam.name }}</h5>
+                        <div sse-swap="cam-{{ cam.id }}" class="text-secondary small">Waiting for updates...</div>
+                    </div>
+                                <div
+                    id="status-{{ cam.id }}"
+                    hx-get="/camera/{{ cam.id }}/status"
+                    hx-trigger="every 5s"
+                    hx-swap="innerHTML"
+                    class="mt-2"
+                >
+                    <small class="text-muted">Checking status...</small>
+                </div>
+                    <div class="mt-2">
+                        <span class="badge bg-success">Live</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <hr class="my-4">
+
+    {% endfor %}
+</div>
+{% endblock %}
