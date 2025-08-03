@@ -1,38 +1,41 @@
-# for context https://ai.google.dev/gemma/docs/gemma-3n
-## 
-# Multimodal (Vision)
-# 4B parameter model (128k context window)
-
-
 import cv2
 import base64
 import json
 import subprocess
 import os
 import time
-
+#ollama run gemma3n:4b
 # CONFIG
-video_path = "../videos/Anomaly-Videos-Part-1/Abuse/Abuse001_x264.mp4"
+video_path = "../videos/Anomaly-Videos-Part-1/Assault/Assault044_x264.mp4"
 model_name = "gemma3:4b"
-prompt = """What is the event in this surveillance frame? Respond with only one word from the following list:
-normal, abuse, arrest, arson, assault, accident, burglary, explosion, fighting, robbery, shooting, stealing, shoplifting, vandalism.
+prompt = """Briefly describe the scene. Label the event with one word from: normal, abuse, arrest, arson, assault, accident, burglary, explosion, fighting, robbery, shooting, stealing, shoplifting, vandalism.
 """
-num_frames = 5
+num_frames = 3
 resize_width = 256  # Optional: resize for faster inference
-
-
+temp_dir_name ="offline_caps_4"
+start_time_sec=13
+end_time_sec=18
 import os
 
-def get_uniform_frames(video_path, num_frames):
+def get_uniform_frames_from_segment(video_path, num_frames, start_time_sec, end_time_sec, resize_width=256):
     cap = cv2.VideoCapture(video_path)
-    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
     fps = cap.get(cv2.CAP_PROP_FPS)
+    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
-    frame_ids = [int(i * total_frames / num_frames) for i in range(num_frames)]
+    if not fps or start_time_sec >= end_time_sec:
+        raise ValueError("Invalid time range or FPS not available.")
+
+    start_frame = int(start_time_sec * fps)
+    end_frame = int(end_time_sec * fps)
+
+    # Clamp to video bounds
+    start_frame = max(0, min(start_frame, total_frames - 1))
+    end_frame = max(0, min(end_frame, total_frames - 1))
+
+    frame_ids = [int(start_frame + i * (end_frame - start_frame) / (num_frames - 1)) for i in range(num_frames)]
     frames_base64 = []
 
-    # Create temp folder relative to script
-    temp_dir = os.path.join(os.getcwd(), "temp")
+    temp_dir = os.path.join(os.getcwd(), temp_dir_name)
     os.makedirs(temp_dir, exist_ok=True)
     print(f"Frames will be saved to: {temp_dir}")
 
@@ -41,11 +44,11 @@ def get_uniform_frames(video_path, num_frames):
         success, frame = cap.read()
         if not success:
             continue
-        # Resize
+        # Resize frame
         frame = cv2.resize(frame, (resize_width, int(frame.shape[0] * resize_width / frame.shape[1])))
-        # Save to file
         frame_path = os.path.join(temp_dir, f"frame_{idx:03d}.jpg")
         cv2.imwrite(frame_path, frame)
+
         # Base64 encode
         _, buffer = cv2.imencode('.jpg', frame)
         base64_str = base64.b64encode(buffer).decode('utf-8')
@@ -53,20 +56,13 @@ def get_uniform_frames(video_path, num_frames):
 
     cap.release()
 
-    # Compute time spanned between first and last extracted frames
-    if len(frame_ids) >= 2 and fps > 0:
-        time_start = frame_ids[0] / fps
-        time_end = frame_ids[-1] / fps
-        time_span_seconds = round(time_end - time_start, 2)
-    else:
-        time_span_seconds = 0.0
+    print(f"Extracted {len(frames_base64)} frames from {start_time_sec:.2f}s to {end_time_sec:.2f}s.")
 
-    print(f"Time spanned in video: {time_span_seconds} seconds")
+    return frames_base64, temp_dir, round(end_time_sec - start_time_sec, 2)
 
-    return frames_base64, temp_dir, time_span_seconds
 
 # Extract and encode
-images_base64,_ , seconds_spanned= get_uniform_frames(video_path, num_frames)
+images_base64,_ , seconds_spanned= get_uniform_frames_from_segment(video_path, num_frames,start_time_sec,end_time_sec)
 
 # Create JSON payload
 payload = {
