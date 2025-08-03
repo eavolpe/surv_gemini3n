@@ -1,7 +1,9 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request,HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import StreamingResponse
+from fastapi.responses import Response
+import httpx
 import cv2
 import os
 import asyncio
@@ -10,7 +12,6 @@ from contextlib import asynccontextmanager
 import faiss
 import numpy as np
 from fastapi.staticfiles import StaticFiles
-
 
 
 templates = Jinja2Templates(directory="templates")
@@ -39,23 +40,29 @@ async def lifespan(app: FastAPI):
     # Store in app state
     yield
     print("App shutting down...")
+
 app = FastAPI(lifespan=lifespan)
 app.mount("/vector_search/sampled_frames", StaticFiles(directory='../vector_search/sampled_frames'), name="sampled_frames")
+app.mount("/demo_videos", StaticFiles(directory="demo_videos"), name="demo_videos")
 
 
 # Simulated list of available cameras
-CAMERAS = [
-    {"id": 1, "name": "Entrance"},
-    {"id": 2, "name": "Backyard"},
-    {"id": 3, "name": "Garage"},
-    {"id": 4, "name": "Living Room"},
-]
+CAMERAS_CONFIG = {
+    1: {
+        "name": "Ultimacam Terminal Norte",
+        "link": "https://siata.gov.co/ultimasFotosCamaras/ultimacam_terminal_norte.jpg",
+        "id": 1
+    },
+    2: {"name": "Backyard"},
+    3: {"name": "Garage"},
+    4: {"name": "Living Room"}
+}
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "cameras": CAMERAS
+        "cameras": list(CAMERAS_CONFIG.values())
     })
 
 @app.get("/technical_writeup", response_class=HTMLResponse)
@@ -76,38 +83,71 @@ async def index(request: Request):
 async def index(request: Request):
     return templates.TemplateResponse("text_stream.html", {
         "request": request,
-        "cameras": CAMERAS
+        "cameras": CAMERAS_CONFIG
     })
 
 
+# Legacy stream response for video type
+# @app.get("/camera/{camera_id}/stream")
+# async def stream_camera(camera_id: int):
+#     frame_folder = f"./frames/"
+#     frame_files = sorted([
+#         f for f in os.listdir(frame_folder)
+#         if f.lower().endswith(('.jpg', '.jpeg', '.png'))
+#     ])
 
-@app.get("/camera/{camera_id}/stream")
-async def stream_camera(camera_id: int):
-    frame_folder = f"./frames/"
-    frame_files = sorted([
-        f for f in os.listdir(frame_folder)
-        if f.lower().endswith(('.jpg', '.jpeg', '.png'))
-    ])
+#     async def generate():
+#         while True:
+#             for filename in frame_files:
+#                 img_path = os.path.join(frame_folder, filename)
+#                 frame = cv2.imread(img_path)
 
-    async def generate():
-        while True:
-            for filename in frame_files:
-                img_path = os.path.join(frame_folder, filename)
-                frame = cv2.imread(img_path)
+#                 if frame is None:
+#                     continue
 
-                if frame is None:
-                    continue
+#                 _, buffer = cv2.imencode('.jpg', frame)
+#                 yield (
+#                     b"--frame\r\n"
+#                     b"Content-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n"
+#                 )
+#                 await asyncio.sleep(0.3)
 
-                _, buffer = cv2.imencode('.jpg', frame)
-                yield (
-                    b"--frame\r\n"
-                    b"Content-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n"
-                )
-                await asyncio.sleep(0.3)
-
-    return StreamingResponse(generate(), media_type="multipart/x-mixed-replace; boundary=frame")
+#     return StreamingResponse(generate(), media_type="multipart/x-mixed-replace; boundary=frame")
 
 
+@app.get("/camera/{camera_id}/image")
+async def get_camera_image(camera_id: int):
+    # Map camera_id to the image URL
+    camera_config = CAMERAS_CONFIG.get(camera_id)
+    if not camera_config:
+        raise HTTPException(status_code=404, detail="Camera not found")
+
+    image_url = camera_config.get("link")
+    if not image_url:
+        raise HTTPException(status_code=404, detail="No image link available")
+    if not image_url:
+        raise HTTPException(status_code=404, detail="Camera not found")
+
+    try:
+        async with httpx.AsyncClient() as client:
+            response = await client.get(image_url)
+
+        if response.status_code != 200:
+            raise HTTPException(status_code=502, detail="Failed to fetch image")
+
+        # Decode image to ensure it's valid
+        np_arr = np.frombuffer(response.content, np.uint8)
+        image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
+
+        if image is None:
+            raise HTTPException(status_code=500, detail="Invalid image data")
+
+        # Re-encode to JPEG and return
+        _, jpeg = cv2.imencode('.jpg', image)
+        return Response(content=jpeg.tobytes(), media_type="image/jpeg")
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 camera_ids = [1, 2, 3, 4]
 
@@ -276,6 +316,63 @@ async def search(request: Request, query: str = ""):
     return templates.TemplateResponse("error_div.html", {
         "request": request,
     })
+
+
+@app.get("/offline", response_class=HTMLResponse)
+async def offline_demo(request: Request):
+    static_cameras = [
+        {
+            "id": 1,
+            "name": "Explosion",
+            "description": " The image shows a car dealership with multiple vehicles. There's a significant explosion occurring in the center of the showroom, sending debris flying. People are visible nearby, reacting to the event.",
+            "recommendation": "explosion"
+        },
+        {
+            "id": 2,
+            "name": "Assault",
+            "description": "The presence of an individual on the floor and the apparent movement suggests a physical altercation. While other categories could theoretically fit (like robbery or fighting), assault seems the most accurate description of the immediate visual evidence.",
+            "recommendation": "assault"
+        },
+        {
+            "id": 3,
+            "name": "Burglary",
+            "description": "The images show a dark, outdoor setting, likely a parking lot or driveway, at night. There are two individuals walking towards a car. One person appears to be carrying a tool (possibly a crowbar) and is actively interacting with the vehicle.",
+            "recommendation": "burglary"
+        },
+        {
+            "id": 4,
+            "name": "Assault",
+            "description": "The image shows several individuals surrounding a person lying on the ground, seemingly in distress. There are indications of a struggle, with one person holding a weapon. It appears to be a chaotic and potentially violent situation.",
+            "recommendation": "assault"
+        },
+    ]
+    return templates.TemplateResponse("offline.html", {"request": request, "static_cameras": static_cameras})
+
+@app.get("/camera/{camera_id}/offline")
+async def stream_camera(camera_id: int):
+        frame_folder = f"./demo_videos/offline_caps_{camera_id}"
+        frame_files = sorted([
+            f for f in os.listdir(frame_folder)
+            if f.lower().endswith(('.jpg', '.jpeg', '.png'))
+        ])
+
+        async def generate():
+            while True:
+                for filename in frame_files:
+                    img_path = os.path.join(frame_folder, filename)
+                    frame = cv2.imread(img_path)
+
+                    if frame is None:
+                        continue
+
+                    _, buffer = cv2.imencode('.jpg', frame)
+                    yield (
+                        b"--frame\r\n"
+                        b"Content-Type: image/jpeg\r\n\r\n" + buffer.tobytes() + b"\r\n"
+                    )
+                    await asyncio.sleep(0.6)
+
+        return StreamingResponse(generate(), media_type="multipart/x-mixed-replace; boundary=frame")
 
 
 # Optional: Start server if running standalone (not needed in Cloud Run)
