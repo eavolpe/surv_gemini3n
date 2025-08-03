@@ -8,3 +8,7 @@ kaggle.json
 vector_search/sampled_frames
 vector_search/image_embeddings.npy
 vector_search/image_embeddings_search.npy
+gemini3n_server/offline_caps_1
+gemini3n_server/offline_caps_2
+gemini3n_server/offline_caps_3
+gemini3n_server/offline_caps_4
