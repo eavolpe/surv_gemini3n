@@ -9,7 +9,6 @@ filenames = list(data_dict.keys())
 vectors = np.stack([data_dict[name] for name in filenames]).astype('float32')
 
 
-
 # Build FAISS index with Inner Product (works like cosine similarity now)
 dim = vectors.shape[1]
 index = faiss.IndexFlatIP(dim)
