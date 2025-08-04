@@ -27,7 +27,7 @@ URLS_FILE = "urls.txt"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load data
-    data_dict = np.load("/vs_embds/image_embeddings.npy", allow_pickle=True).item()
+    data_dict = np.load("./vs_embds/image_embeddings.npy", allow_pickle=True).item()
 
     # Extract filenames and vectors
     filenames = list(data_dict.keys())
@@ -48,7 +48,7 @@ async def lifespan(app: FastAPI):
     print("App shutting down...")
 
 app = FastAPI(lifespan=lifespan)
-app.mount("/vs_embds/sampled_frames", StaticFiles(directory='../vector_search/sampled_frames'), name="sampled_frames")
+app.mount("/vector_search/sampled_frames", StaticFiles(directory='./vs_embds/sampled_frames'), name="sampled_frames")
 app.mount("/demo_videos", StaticFiles(directory="demo_videos"), name="demo_videos")
 
 
@@ -185,7 +185,7 @@ async def get_metadata(request: Request, cam_id: str):
 @app.get("/search_images", response_class=HTMLResponse)
 async def search(request: Request, query: str = ""):
     if query == 'traffic cones and a street person in motorcycle crossing':
-        check_dict = np.load("/vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
+        check_dict = np.load("./vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Abuse_Abuse010_x264_frame322.jpg']
 
         # Normalize the query vector
@@ -209,7 +209,7 @@ async def search(request: Request, query: str = ""):
             "results": results
         })
     if query == 'inside of home picture of jesus open door':
-        check_dict = np.load("/vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
+        check_dict = np.load("./vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Abuse_Abuse001_x264_frame1128.jpg']
 
         # Normalize the query vector
@@ -233,7 +233,7 @@ async def search(request: Request, query: str = ""):
             "results": results
         })
     if query == 'a lot of cars in a street blocking':
-        check_dict = np.load("/vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
+        check_dict = np.load("./vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Arrest_Arrest017_x264_frame2655.jpg']
 
         # Normalize the query vector
