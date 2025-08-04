@@ -1,13 +1,10 @@
 import os
 import json
-import time
 import base64
 import requests
 import cv2
 import numpy as np
-import subprocess
 from datetime import datetime
-from urllib.parse import urlparse
 from google.cloud import storage
 from secrets import gemma_url
 import requests
