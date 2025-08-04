@@ -12,11 +12,15 @@ from contextlib import asynccontextmanager
 import faiss
 import numpy as np
 from fastapi.staticfiles import StaticFiles
+from google.cloud import storage
 
 
 templates = Jinja2Templates(directory="templates")
 
 vector_dbs = {}
+
+GCS_BUCKET = "gemma_prj"
+URLS_FILE = "urls.txt"
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -44,6 +48,15 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.mount("/vector_search/sampled_frames", StaticFiles(directory='../vector_search/sampled_frames'), name="sampled_frames")
 app.mount("/demo_videos", StaticFiles(directory="demo_videos"), name="demo_videos")
+
+
+
+def get_urls_from_gcs(bucket_name, blob_name):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_name)
+    content = blob.download_as_text()
+    return [line.strip() for line in content.strip().splitlines() if line.strip()]
 
 
 # Simulated list of available cameras

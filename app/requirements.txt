@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+jinja2
+httpx
+opencv-python-headless
+faiss-cpu
+numpy
+google-cloud-storage
