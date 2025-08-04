@@ -15,3 +15,4 @@ gemini3n_server/offline_caps_4
 realtime_inference_job/secrets.py
 realtime_inference_job/secret.json
 app/secret.json
+app/vs_embds

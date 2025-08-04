@@ -1,7 +1,7 @@
 from fastapi import FastAPI, Request,HTTPException
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, JSONResponse
 from fastapi.responses import Response
 import httpx
 import cv2
@@ -13,9 +13,11 @@ import faiss
 import numpy as np
 from fastapi.staticfiles import StaticFiles
 from google.cloud import storage
-
+import io
+import json
 
 templates = Jinja2Templates(directory="templates")
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "secret.json"
 
 vector_dbs = {}
 
@@ -25,7 +27,7 @@ URLS_FILE = "urls.txt"
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Load data
-    data_dict = np.load("../vector_search/image_embeddings.npy", allow_pickle=True).item()
+    data_dict = np.load("/vs_embds/image_embeddings.npy", allow_pickle=True).item()
 
     # Extract filenames and vectors
     filenames = list(data_dict.keys())
@@ -46,7 +48,7 @@ async def lifespan(app: FastAPI):
     print("App shutting down...")
 
 app = FastAPI(lifespan=lifespan)
-app.mount("/vector_search/sampled_frames", StaticFiles(directory='../vector_search/sampled_frames'), name="sampled_frames")
+app.mount("/vs_embds/sampled_frames", StaticFiles(directory='../vector_search/sampled_frames'), name="sampled_frames")
 app.mount("/demo_videos", StaticFiles(directory="demo_videos"), name="demo_videos")
 
 
@@ -59,23 +61,39 @@ def get_urls_from_gcs(bucket_name, blob_name):
     return [line.strip() for line in content.strip().splitlines() if line.strip()]
 
 
+def extract_source_id(url):
+    filename = os.path.basename(url)  # e.g., ultimacam_drenaje_urbano_monterrey.jpg
+    if filename.endswith(".jpg"):
+        return filename[:-len(".jpg")]  # keep "ultimacam_" in the ID
+    raise ValueError(f"Invalid image URL format: {url}")
+
+
+
+def get_gcs_blob(bucket_name: str, blob_path: str):
+    client = storage.Client()
+    bucket = client.bucket(bucket_name)
+    blob = bucket.blob(blob_path)
+    if not blob.exists():
+        raise HTTPException(status_code=404, detail=f"Blob not found: {blob_path}")
+    return blob
+
+
+
+
+
 # Simulated list of available cameras
-CAMERAS_CONFIG = {
-    1: {
-        "name": "Ultimacam Terminal Norte",
-        "link": "https://siata.gov.co/ultimasFotosCamaras/ultimacam_terminal_norte.jpg",
-        "id": 1
-    },
-    2: {"name": "Backyard"},
-    3: {"name": "Garage"},
-    4: {"name": "Living Room"}
-}
+URL_LIST = get_urls_from_gcs( "gemma_prj", "urls.txt")
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+    config = []
+    for url in URL_LIST:
+        config.append({'id':extract_source_id(url),'name':extract_source_id(url)})
+        #get metadata from last inference and image
+
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "cameras": list(CAMERAS_CONFIG.values())
+        "cameras": config
     })
 
 @app.get("/technical_writeup", response_class=HTMLResponse)
@@ -92,12 +110,12 @@ async def index(request: Request):
 
 
 
-@app.get("/stream_text_test", response_class=HTMLResponse)
-async def index(request: Request):
-    return templates.TemplateResponse("text_stream.html", {
-        "request": request,
-        "cameras": CAMERAS_CONFIG
-    })
+# @app.get("/stream_text_test", response_class=HTMLResponse)
+# async def index(request: Request):
+#     return templates.TemplateResponse("text_stream.html", {
+#         "request": request,
+#         "cameras": CAMERAS_CONFIG
+#     })
 
 
 # Legacy stream response for video type
@@ -127,127 +145,47 @@ async def index(request: Request):
 
 #     return StreamingResponse(generate(), media_type="multipart/x-mixed-replace; boundary=frame")
 
-
 @app.get("/camera/{camera_id}/image")
-async def get_camera_image(camera_id: int):
-    # Map camera_id to the image URL
-    camera_config = CAMERAS_CONFIG.get(camera_id)
-    if not camera_config:
-        raise HTTPException(status_code=404, detail="Camera not found")
+async def get_camera_image(camera_id: str):
+    bucket_name = GCS_BUCKET  # Replace with your actual GCS bucket
+    base_path = f"sources/{camera_id}/latest"
 
-    image_url = camera_config.get("link")
-    if not image_url:
-        raise HTTPException(status_code=404, detail="No image link available")
-    if not image_url:
-        raise HTTPException(status_code=404, detail="Camera not found")
+    image_blob = get_gcs_blob(bucket_name, f"{base_path}/image.jpg")
+    image_bytes = image_blob.download_as_bytes()
+    image_stream = io.BytesIO(image_bytes)
 
-    try:
-        async with httpx.AsyncClient() as client:
-            response = await client.get(image_url)
-
-        if response.status_code != 200:
-            raise HTTPException(status_code=502, detail="Failed to fetch image")
-
-        # Decode image to ensure it's valid
-        np_arr = np.frombuffer(response.content, np.uint8)
-        image = cv2.imdecode(np_arr, cv2.IMREAD_COLOR)
-
-        if image is None:
-            raise HTTPException(status_code=500, detail="Invalid image data")
-
-        # Re-encode to JPEG and return
-        _, jpeg = cv2.imencode('.jpg', image)
-        return Response(content=jpeg.tobytes(), media_type="image/jpeg")
-
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-camera_ids = [1, 2, 3, 4]
-
-# Simulate an incremental word-by-word stream
-async def stream_message(message: str, delay: float = 0.3, event_name: str = "message"):
-    words = message.split()
-    sentence_so_far = ""
-    for word in words:
-        sentence_so_far += word + " "
-        yield f"event: {event_name}\ndata: {sentence_so_far.strip()}\n\n"
-        await asyncio.sleep(delay)
-    await asyncio.sleep(1)  # Optional pause
-
-# Generate events for all cameras
-async def event_generator():
-    example_messages = {
-        1: "Camera 1 detected motion near the door.",
-        2: "Camera 2 is operating normally.",
-        3: "Camera 3 lost connection briefly.",
-        4: "Camera 4 temperature threshold exceeded."
-    }
-
-    while True:
-        for cam_id in camera_ids:
-            message = example_messages[cam_id]
-            event_name = f"cam-{cam_id}"
-            async for update in stream_message(message, delay=0.2, event_name=event_name):
-                yield update
-        await asyncio.sleep(2)  # Delay before starting next loop
-        
-
-@app.get("/camera/all/stream_text")
-async def camera_text_stream(request: Request):
-    async def event_stream():
-        try:
-            async for message in event_generator():
-                if await request.is_disconnected():
-                    break
-                yield message
-        except asyncio.CancelledError:
-            pass
-    return StreamingResponse(event_stream(), media_type="text/event-stream")
+    return StreamingResponse(image_stream, media_type="image/jpeg")
 
 
 
+# @app.get("/camera/all/stream_text")
+# async def camera_text_stream(request: Request):
+#     async def event_stream():
+#         try:
+#             async for message in event_generator():
+#                 if await request.is_disconnected():
+#                     break
+#                 yield message
+#         except asyncio.CancelledError:
+#             pass
+#     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
-STATUS_OPTIONS = [
-    {
-        "label": "Burglary",
-        "description": "Suspected unlawful entry with intent to steal.",
-        "type": "warning",
-        "action": "Call Security",
-        "icon": "bi-shield-lock",
-        "class": "btn-outline-primary"
-    },
-    {
-        "label": "Shooting",
-        "description": "Possible use of firearm detected.",
-        "type": "danger",
-        "action": "Call Police",
-        "icon": "bi-shield-fill-exclamation",
-        "class": "btn-outline-danger"
-    },
-    {
-        "label": "Normal",
-        "description": "No suspicious activity.",
-        "type": "secondary",
-        "action": None,
-        "icon": "",
-        "class": ""
-    }
-]
+
 
 @app.get("/camera/{cam_id}/status", response_class=HTMLResponse)
-async def get_camera_status(request: Request, cam_id: int):
-    status = random.choice(STATUS_OPTIONS)  # Replace with real detection logic
+async def get_metadata(request: Request, cam_id: str):
+    blob = get_gcs_blob(GCS_BUCKET, f"sources/{cam_id}/latest/metadata.json")
+    metadata = json.loads(blob.download_as_text())
     return templates.TemplateResponse("camera_status.html", {
         "request": request,
         "cam_id": cam_id,
-        "status": status
+        "status": metadata
     })
-
 
 @app.get("/search_images", response_class=HTMLResponse)
 async def search(request: Request, query: str = ""):
     if query == 'traffic cones and a street person in motorcycle crossing':
-        check_dict = np.load("../vector_search/image_embeddings_search.npy", allow_pickle=True).item()
+        check_dict = np.load("/vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Abuse_Abuse010_x264_frame322.jpg']
 
         # Normalize the query vector
@@ -264,7 +202,6 @@ async def search(request: Request, query: str = ""):
             score = f"{distances[0][i]}"
             image_filename = vector_dbs['docs'][indices[0][i]]
             path = f"/vector_search/sampled_frames/{image_filename}"
-            print(path)
             results.append({'image_path': path, "score": score})
 
         return templates.TemplateResponse("search_card.html", {
@@ -272,7 +209,7 @@ async def search(request: Request, query: str = ""):
             "results": results
         })
     if query == 'inside of home picture of jesus open door':
-        check_dict = np.load("../vector_search/image_embeddings_search.npy", allow_pickle=True).item()
+        check_dict = np.load("/vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Abuse_Abuse001_x264_frame1128.jpg']
 
         # Normalize the query vector
@@ -289,7 +226,6 @@ async def search(request: Request, query: str = ""):
             score = f"{distances[0][i]}"
             image_filename = vector_dbs['docs'][indices[0][i]]
             path = f"/vector_search/sampled_frames/{image_filename}"
-            print(path)
             results.append({'image_path': path, "score": score})
 
         return templates.TemplateResponse("search_card.html", {
@@ -297,7 +233,7 @@ async def search(request: Request, query: str = ""):
             "results": results
         })
     if query == 'a lot of cars in a street blocking':
-        check_dict = np.load("../vector_search/image_embeddings_search.npy", allow_pickle=True).item()
+        check_dict = np.load("/vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Arrest_Arrest017_x264_frame2655.jpg']
 
         # Normalize the query vector
@@ -314,7 +250,6 @@ async def search(request: Request, query: str = ""):
             score = f"{distances[0][i]}"
             image_filename = vector_dbs['docs'][indices[0][i]]
             path = f"/vector_search/sampled_frames/{image_filename}"
-            print(path)
             results.append({'image_path': path, "score": score})
 
         return templates.TemplateResponse("search_card.html", {
