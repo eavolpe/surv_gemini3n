@@ -1,3 +1,11 @@
+<div class="alert alert-secondary shadow-sm p-4 mb-4" role="alert">
+  <h4 class="alert-heading text-dark mb-2">The following frames have been found:</h4>
+  <p class="mb-0 text-muted">
+    Our goal is not only to prompt faster government action—but also to unlock access to critical visual evidence.
+    By enabling unstructured search across vast video archives, we remove a major bottleneck in identifying,
+    verifying, and responding to incidents.
+  </p>
+</div>
 {% for result in results %}
 <div class="col-md-4">
   <div class="card shadow-sm h-100">
@@ -5,8 +13,9 @@
     <div class="card-body">
       <h5 class="card-title">Confidence Score</h5>
       <p class="card-text">
-        <span class="badge bg-info">{{ result.score }}%</span>
-      </p>
+      <span class="badge bg-info fs-5">
+        {{ (result.score * 100) | round(2) }}%
+      </span>      </p>
     </div>
   </div>
 </div>

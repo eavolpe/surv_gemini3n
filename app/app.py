@@ -184,6 +184,7 @@ async def get_metadata(request: Request, cam_id: str):
 
 @app.get("/search_images", response_class=HTMLResponse)
 async def search(request: Request, query: str = ""):
+    print(query)
     if query == 'traffic cones and a street person in motorcycle crossing':
         check_dict = np.load("./vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Abuse_Abuse010_x264_frame322.jpg']
@@ -202,13 +203,13 @@ async def search(request: Request, query: str = ""):
             score = f"{distances[0][i]}"
             image_filename = vector_dbs['docs'][indices[0][i]]
             path = f"/vector_search/sampled_frames/{image_filename}"
-            results.append({'image_path': path, "score": score})
+            results.append({'image_path': path, "score": float(score)})
 
         return templates.TemplateResponse("search_card.html", {
             "request": request,
             "results": results
         })
-    if query == 'inside of home picture of jesus open door':
+    if query == 'inside of home and door':
         check_dict = np.load("./vs_embds/image_embeddings_search.npy", allow_pickle=True).item()
         embds = check_dict['Abuse_Abuse001_x264_frame1128.jpg']
 
@@ -226,7 +227,7 @@ async def search(request: Request, query: str = ""):
             score = f"{distances[0][i]}"
             image_filename = vector_dbs['docs'][indices[0][i]]
             path = f"/vector_search/sampled_frames/{image_filename}"
-            results.append({'image_path': path, "score": score})
+            results.append({'image_path': path, "score": float(score)})
 
         return templates.TemplateResponse("search_card.html", {
             "request": request,
@@ -250,7 +251,7 @@ async def search(request: Request, query: str = ""):
             score = f"{distances[0][i]}"
             image_filename = vector_dbs['docs'][indices[0][i]]
             path = f"/vector_search/sampled_frames/{image_filename}"
-            results.append({'image_path': path, "score": score})
+            results.append({'image_path': path, "score": float(score)})
 
         return templates.TemplateResponse("search_card.html", {
             "request": request,
