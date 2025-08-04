@@ -1,0 +1,514 @@
+{
+  "evaluation_info": {
+    "timestamp": "2025-08-04T02:10:16.351216",
+    "dataset_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames",
+    "models": [
+      "gsec2b",
+      "gsec4b"
+    ],
+    "total_results": 26
+  },
+  "metrics": {
+    "gsec2b_accuracy": 0.07692307692307693,
+    "gsec2b_total_images": 13,
+    "gsec4b_accuracy": 0.07692307692307693,
+    "gsec4b_total_images": 13,
+    "RoadAccidents_gsec2b_accuracy": 0.0,
+    "RoadAccidents_gsec2b_count": 1,
+    "RoadAccidents_gsec4b_accuracy": 0.0,
+    "RoadAccidents_gsec4b_count": 1,
+    "Arson_gsec2b_accuracy": 0.0,
+    "Arson_gsec2b_count": 1,
+    "Arson_gsec4b_accuracy": 0.0,
+    "Arson_gsec4b_count": 1,
+    "Shoplifting_gsec2b_accuracy": 0.0,
+    "Shoplifting_gsec2b_count": 1,
+    "Shoplifting_gsec4b_accuracy": 1.0,
+    "Shoplifting_gsec4b_count": 1,
+    "Stealing_gsec2b_accuracy": 0.0,
+    "Stealing_gsec2b_count": 1,
+    "Stealing_gsec4b_accuracy": 0.0,
+    "Stealing_gsec4b_count": 1,
+    "Burglary_gsec2b_accuracy": 0.0,
+    "Burglary_gsec2b_count": 1,
+    "Burglary_gsec4b_accuracy": 0.0,
+    "Burglary_gsec4b_count": 1,
+    "Fighting_gsec2b_accuracy": 0.0,
+    "Fighting_gsec2b_count": 1,
+    "Fighting_gsec4b_accuracy": 0.0,
+    "Fighting_gsec4b_count": 1,
+    "Vandalism_gsec2b_accuracy": 1.0,
+    "Vandalism_gsec2b_count": 1,
+    "Vandalism_gsec4b_accuracy": 0.0,
+    "Vandalism_gsec4b_count": 1,
+    "Explosion_gsec2b_accuracy": 0.0,
+    "Explosion_gsec2b_count": 1,
+    "Explosion_gsec4b_accuracy": 0.0,
+    "Explosion_gsec4b_count": 1,
+    "Arrest_gsec2b_accuracy": 0.0,
+    "Arrest_gsec2b_count": 1,
+    "Arrest_gsec4b_accuracy": 0.0,
+    "Arrest_gsec4b_count": 1,
+    "Abuse_gsec2b_accuracy": 0.0,
+    "Abuse_gsec2b_count": 1,
+    "Abuse_gsec4b_accuracy": 0.0,
+    "Abuse_gsec4b_count": 1,
+    "Robbery_gsec2b_accuracy": 0.0,
+    "Robbery_gsec2b_count": 1,
+    "Robbery_gsec4b_accuracy": 0.0,
+    "Robbery_gsec4b_count": 1,
+    "Assault_gsec2b_accuracy": 0.0,
+    "Assault_gsec2b_count": 1,
+    "Assault_gsec4b_accuracy": 0.0,
+    "Assault_gsec4b_count": 1,
+    "Shooting_gsec2b_accuracy": 0.0,
+    "Shooting_gsec2b_count": 1,
+    "Shooting_gsec4b_accuracy": 0.0,
+    "Shooting_gsec4b_count": 1,
+    "confusion_matrix": {
+      "RoadAccidents": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Arson": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Shoplifting": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Stealing": {
+        "Shoplifting": 2
+      },
+      "Burglary": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Fighting": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Vandalism": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Explosion": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Arrest": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Abuse": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Robbery": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Assault": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      },
+      "Shooting": {
+        "Vandalism": 1,
+        "Shoplifting": 1
+      }
+    }
+  },
+  "detailed_results": [
+    {
+      "timestamp": "2025-08-04T02:09:31.481101",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/RoadAccidents/RoadAccidents001_x264_0000.jpg",
+      "image_file": "RoadAccidents001_x264_0000.jpg",
+      "ground_truth": "RoadAccidents",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Individuals are throwing objects (likely rocks or other debris) at a vehicle parked in a residential area. Damage is visible on the vehicle's windshield.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n\"classification\": \"Vandalism\",\n\"confidence\": \"medium\",\n\"description\": \"Individuals are throwing objects (likely rocks or other debris) at a vehicle parked in a residential area. Damage is visible on the vehicle's windshield.\",\n\"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:34.444255",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/RoadAccidents/RoadAccidents001_x264_0000.jpg",
+      "image_file": "RoadAccidents001_x264_0000.jpg",
+      "ground_truth": "RoadAccidents",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items within a shopping bag while browsing in a retail environment.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items within a shopping bag while browsing in a retail environment.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:35.876619",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Arson/Arson007_x264_0000.jpg",
+      "image_file": "Arson007_x264_0000.jpg",
+      "ground_truth": "Arson",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Someone is throwing something (likely a rock or other object) at a car parked in front of a building. The object is visible in the image and is impacting the vehicle.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Someone is throwing something (likely a rock or other object) at a car parked in front of a building. The object is visible in the image and is impacting the vehicle.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:38.118823",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Arson/Arson007_x264_0000.jpg",
+      "image_file": "Arson007_x264_0000.jpg",
+      "ground_truth": "Arson",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items within a shopping bag while exiting a retail store.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items within a shopping bag while exiting a retail store.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:39.407658",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Shoplifting/Shoplifting001_x264_0000.jpg",
+      "image_file": "Shoplifting001_x264_0000.jpg",
+      "ground_truth": "Shoplifting",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Person(s) throwing objects (likely paint or other substances) at a building.  Visible damage to the building facade.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Person(s) throwing objects (likely paint or other substances) at a building.  Visible damage to the building facade.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:41.538196",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Shoplifting/Shoplifting001_x264_0000.jpg",
+      "image_file": "Shoplifting001_x264_0000.jpg",
+      "ground_truth": "Shoplifting",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment.",
+        "risk_level": "medium"
+      },
+      "correct": true,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:42.861373",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Stealing/Stealing036_x264_0000.jpg",
+      "image_file": "Stealing036_x264_0000.jpg",
+      "ground_truth": "Stealing",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "medium",
+        "description": "Person(s) appearing to take items from a store while the store is open.  The individual(s) are moving quickly and appear to be concealing items.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n\"classification\": \"Shoplifting\",\n\"confidence\": \"medium\",\n\"description\": \"Person(s) appearing to take items from a store while the store is open.  The individual(s) are moving quickly and appear to be concealing items.\",\n\"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:45.060443",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Stealing/Stealing036_x264_0000.jpg",
+      "image_file": "Stealing036_x264_0000.jpg",
+      "ground_truth": "Stealing",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items within a shopping bag in a retail environment.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items within a shopping bag in a retail environment.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:46.195900",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Burglary/Burglary005_x264_0000.jpg",
+      "image_file": "Burglary005_x264_0000.jpg",
+      "ground_truth": "Burglary",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Graffiti on the exterior wall of the building.  Visible spray paint markings.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Graffiti on the exterior wall of the building.  Visible spray paint markings.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:48.641756",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Burglary/Burglary005_x264_0000.jpg",
+      "image_file": "Burglary005_x264_0000.jpg",
+      "ground_truth": "Burglary",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items within a shopping bag in a retail environment.  The individual appears to be avoiding direct interaction with store staff.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items within a shopping bag in a retail environment.  The individual appears to be avoiding direct interaction with store staff.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:49.682930",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Fighting/Fighting003_x264_0000.jpg",
+      "image_file": "Fighting003_x264_0000.jpg",
+      "ground_truth": "Fighting",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Graffiti on the wall.  Visible spray paint marks.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Graffiti on the wall.  Visible spray paint marks.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:52.039756",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Fighting/Fighting003_x264_0000.jpg",
+      "image_file": "Fighting003_x264_0000.jpg",
+      "ground_truth": "Fighting",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment.  Appears to be placing items in a bag.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment.  Appears to be placing items in a bag.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:53.097533",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Vandalism/Vandalism007_x264_0000.jpg",
+      "image_file": "Vandalism007_x264_0000.jpg",
+      "ground_truth": "Vandalism",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Graffiti on the wall. Visible spray paint marks.",
+        "risk_level": "medium"
+      },
+      "correct": true,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Graffiti on the wall. Visible spray paint marks.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:55.394775",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Vandalism/Vandalism007_x264_0000.jpg",
+      "image_file": "Vandalism007_x264_0000.jpg",
+      "ground_truth": "Vandalism",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items within a shopping bag while browsing in a retail environment.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items within a shopping bag while browsing in a retail environment.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:56.429761",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Explosion/Explosion002_x264_0000.jpg",
+      "image_file": "Explosion002_x264_0000.jpg",
+      "ground_truth": "Explosion",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Person throwing a rock at a window, causing damage.  Visible impact on the window.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n\"classification\": \"Vandalism\",\n\"confidence\": \"medium\",\n\"description\": \"Person throwing a rock at a window, causing damage.  Visible impact on the window.\",\n\"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:09:58.935908",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Explosion/Explosion002_x264_0000.jpg",
+      "image_file": "Explosion002_x264_0000.jpg",
+      "ground_truth": "Explosion",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "A person is observed concealing items in a shopping bag within a retail environment. The person appears to be deliberately avoiding interaction with store staff.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"A person is observed concealing items in a shopping bag within a retail environment. The person appears to be deliberately avoiding interaction with store staff.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:00.242675",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Arrest/Arrest001_x264_0000.jpg",
+      "image_file": "Arrest001_x264_0000.jpg",
+      "ground_truth": "Arrest",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Person(s) is/are throwing objects (likely rocks or other debris) at a vehicle parked in a residential area. Damage to the vehicle is visible.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Person(s) is/are throwing objects (likely rocks or other debris) at a vehicle parked in a residential area. Damage to the vehicle is visible.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:02.652288",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Arrest/Arrest001_x264_0000.jpg",
+      "image_file": "Arrest001_x264_0000.jpg",
+      "ground_truth": "Arrest",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment. The person is looking around and appears to be avoiding detection.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment. The person is looking around and appears to be avoiding detection.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:03.915409",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Abuse/Abuse028_x264_0000.jpg",
+      "image_file": "Abuse028_x264_0000.jpg",
+      "ground_truth": "Abuse",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Person is throwing a rock at a window. The rock is clearly visible in mid-air and the window is being damaged.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Person is throwing a rock at a window. The rock is clearly visible in mid-air and the window is being damaged.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:06.112612",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Abuse/Abuse028_x264_0000.jpg",
+      "image_file": "Abuse028_x264_0000.jpg",
+      "ground_truth": "Abuse",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment.\", \"risk_level\": \"medium\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:07.214817",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Robbery/Robbery048_x264_0000.jpg",
+      "image_file": "Robbery048_x264_0000.jpg",
+      "ground_truth": "Robbery",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Graffiti on the exterior wall of the building. Visible spray paint markings.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n  \"classification\": \"Vandalism\",\n  \"confidence\": \"medium\",\n  \"description\": \"Graffiti on the exterior wall of the building. Visible spray paint markings.\",\n  \"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:09.395855",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Robbery/Robbery048_x264_0000.jpg",
+      "image_file": "Robbery048_x264_0000.jpg",
+      "ground_truth": "Robbery",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment.",
+        "risk_level": "low"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment.\", \"risk_level\": \"low\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:10.504339",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Assault/Assault006_x264_0000.jpg",
+      "image_file": "Assault006_x264_0000.jpg",
+      "ground_truth": "Assault",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Person throwing a rock at a window. The rock is visible in mid-air and impact is evident on the glass.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n\"classification\": \"Vandalism\",\n\"confidence\": \"medium\",\n\"description\": \"Person throwing a rock at a window. The rock is visible in mid-air and impact is evident on the glass.\",\n\"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:12.702395",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Assault/Assault006_x264_0000.jpg",
+      "image_file": "Assault006_x264_0000.jpg",
+      "ground_truth": "Assault",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment.",
+        "risk_level": "low"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment.\", \"risk_level\": \"low\"}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:13.943279",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Shooting/Shooting002_x264_0000.jpg",
+      "image_file": "Shooting002_x264_0000.jpg",
+      "ground_truth": "Shooting",
+      "model": "gsec2b",
+      "prediction": {
+        "classification": "Vandalism",
+        "confidence": "medium",
+        "description": "Person(s) throwing objects (possibly paint or other substances) onto a building facade. Visible damage to the wall is present.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\n\"classification\": \"Vandalism\",\n\"confidence\": \"medium\",\n\"description\": \"Person(s) throwing objects (possibly paint or other substances) onto a building facade. Visible damage to the wall is present.\",\n\"risk_level\": \"medium\"\n}\n```"
+    },
+    {
+      "timestamp": "2025-08-04T02:10:16.351130",
+      "image_path": "/Users/rafael/Factored/surv_gemini3n/experimental/datasets/data/anomaly_frames/Shooting/Shooting002_x264_0000.jpg",
+      "image_file": "Shooting002_x264_0000.jpg",
+      "ground_truth": "Shooting",
+      "model": "gsec4b",
+      "prediction": {
+        "classification": "Shoplifting",
+        "confidence": "high",
+        "description": "Individual concealing items while browsing in a retail environment.  Appears to be taking items without paying.",
+        "risk_level": "medium"
+      },
+      "correct": false,
+      "raw_response": "```json\n{\"classification\": \"Shoplifting\", \"confidence\": \"high\", \"description\": \"Individual concealing items while browsing in a retail environment.  Appears to be taking items without paying.\", \"risk_level\": \"medium\"}\n```"
+    }
+  ]
+}
