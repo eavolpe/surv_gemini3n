@@ -22,5 +22,22 @@ curl {CLOUD_RUN_URL}/api/generate -d '{
 }'
 ```
 
+
+## Deploy the job  
+```
+gcloud builds submit --tag gcr.io/YOUR_PROJECT_ID/surv-job
+```
+```
+gcloud run jobs create surv-job \
+  --image gcr.io/YOUR_PROJECT_ID/surv-job \
+  --region us-central1 \
+  --tasks 1
+```
+
+
+## Test locally before the run 
+1. docker build -t surv-job .  
+2. docker run -it --rm surv-job
+
 https://cloud.google.com/run/docs/run-gemma-on-cloud-run
 https://cloud.google.com/run/docs/quickstarts/jobs/build-create-python
