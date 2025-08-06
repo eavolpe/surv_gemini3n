@@ -1,16 +1,7 @@
-{% if status.label != "Normal" %}
-<div class="alert alert-{{ status.type }} d-flex align-items-center p-2 small mb-2" role="alert">
-    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-    <div>
-        <strong>{{ status.label }}</strong>: {{ status.description }}
-    </div>
+<div>
+    <small class="text-muted">
+        <strong>Status:</strong> {{ status.label }}<br>
+        <strong>Timestamp:</strong> {{ status.timestamp }}<br>
+        <strong>Description:</strong> {{ status.description }}
+    </small>
 </div>
-{% else %}
-<small class="text-muted">No issues detected.</small>
-{% endif %}
-
-{% if status.action %}
-<button class="btn {{ status.class }} btn-sm mt-1">
-    <i class="bi {{ status.icon }}"></i> {{ status.action }}
-</button>
-{% endif %}
