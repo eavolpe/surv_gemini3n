@@ -1,4 +1,4 @@
-# 🚨 SurvGemini3n - AI-Powered Security Surveillance System
+# 🚨 GemmaVision - AI-Powered Security Surveillance System
 
 **Submission for The Gemma 3n Impact Challenge**
 
@@ -6,7 +6,7 @@ An intelligent surveillance system powered by Google's Gemma 3n multimodal AI mo
 
 ## 🎯 Overview
 
-SurvGemini3n is an on-premise security surveillance solution that leverages Gemma 3n's vision capabilities to detect and classify security incidents in real-time. The system prioritizes privacy by processing data locally while providing government and private security teams with automated threat detection.
+GemmaVision is an on-premise security surveillance solution that leverages Gemma 3n's vision capabilities to detect and classify security incidents in real-time. The system prioritizes privacy by processing data locally while providing government and private security teams with automated threat detection.
 
 ## 🚀 Key Features
 
