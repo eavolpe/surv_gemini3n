@@ -1,0 +1,21 @@
+FROM gemma3n:e2b
+SYSTEM """ You are a security AI analyzing surveillance images. Classify activities as: Abuse, Assault, Fighting, Shooting, Burglary, Robbery, Stealing, Shoplifting, Vandalism, Arson, Explosion, RoadAccidents, Arrest, or Normal.
+
+Be precise: only use "Shooting" if firearms are visible, "Robbery" only for confrontational theft with force.
+
+Always respond in JSON:
+{"classification": "category", "confidence": "high/medium/low", "description": "what you see", "risk_level": "high/medium/low/none"}
+
+Focus on what's clearly visible. When uncertain, choose the less severe classification. """
+TEMPLATE """
+{{- range $i, $_ := .Messages }}
+{{- $last := eq (len (slice $.Messages $i)) 1 }}
+{{- if or (eq .Role "user") (eq .Role "system") }}<start_of_turn>user
+{{ .Content }}<end_of_turn>
+{{ if $last }}<start_of_turn>model
+{{ end }}
+{{- else if eq .Role "assistant" }}<start_of_turn>model
+{{ .Content }}{{ if not $last }}<end_of_turn>
+{{ end }}
+{{- end }}
+{{- end }}"""

@@ -1,12 +1,46 @@
-# 🛰️ Gemini Vision
+# 🚨 SurvGemini3n - AI-Powered Security Surveillance System
 
-**Gemini Vision** is an AI-powered surveillance and rapid response toolkit built with **Gemma 3n**. It is designed to support government agencies in monitoring visual data, performing intelligent searches, and accelerating operational decisions.
+**Submission for The Gemma 3n Impact Challenge**
 
-> ⚠️ **Authorized Use Only:** This software is intended strictly for official surveillance and public safety purposes.
+An intelligent surveillance system powered by Google's Gemma 3n multimodal AI model for real-time anomaly detection and security monitoring.
 
----
+## 🎯 Overview
 
-## 📦 Features
+SurvGemini3n is an on-premise security surveillance solution that leverages Gemma 3n's vision capabilities to detect and classify security incidents in real-time. The system prioritizes privacy by processing data locally while providing government and private security teams with automated threat detection.
+
+## 🚀 Key Features
+
+* **Real-time Camera Surveillance** - Monitor multiple camera feeds simultaneously
+* **AI-Powered Anomaly Detection** - Classify incidents: Abuse, Assault, Fighting, Shooting, Burglary, Robbery, Stealing, Shoplifting, Vandalism, Arson, Explosion, Road Accidents, Arrests
+* **Web Interface** - Stream processing and offline dashboard
+* **Privacy-First Design** - On-premise processing, no cloud data transmission
+* **Benchmark Testing** - Comprehensive evaluation framework with UCF Crime dataset
+
+## 🛠 Installation
+
+We recommend using [uv](https://github.com/astral-sh/uv) for fast, reliable Python dependency management and environment setup.
+
+1. **Install uv** (if you don't have it):
+   ```bash
+   pip install uv
+   ```
+
+2. **Install project dependencies**:
+   ```bash
+   uv pip install -r requirements.txt
+   ```
+
+3. **Run the application or scripts** as described in the relevant sections below.
+
+*uv* is a drop-in replacement for pip and venv, providing faster installs and isolated environments. For more details, see the [uv documentation](https://github.com/astral-sh/uv).
+
+
+### PENDING THE REST OF THE LOCAL SETUP
+
+
+## 📊 Dataset & Evaluation
+
+The system is trained and evaluated on the [UCF Crime Dataset](https://www.crcv.ucf.edu/projects/real-world/), a comprehensive collection of real-world surveillance footage for anomaly detection research.
 
 - 🎯 AI-powered visual analysis (via Gemma 3n)
 - 🔍 Advanced entity and keyword search
@@ -18,3 +52,4 @@
 
 
 
+## Real time feedback / Scenarios where the model warns of an aggression
