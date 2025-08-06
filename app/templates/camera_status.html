@@ -4,4 +4,156 @@
         <strong>Timestamp:</strong> {{ status.timestamp }}<br>
         <strong>Description:</strong> {{ status.description }}
     </small>
+
+    <style>
+        .alert-box {
+            border: 1px solid #ddd;
+            padding: 16px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+        }
+        .alert-status {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+        }
+        .alert-action {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 8px;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            background-color: #fff;
+        }
+        .alert-icon {
+            font-size: 1.5em;
+            margin-right: 12px;
+        }
+        .alert-text {
+            flex-grow: 1;
+        }
+        .alert-button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+        .alert-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+
+    <script>
+        // Attach event to all .alert-button elements
+        document.addEventListener('DOMContentLoaded', function () {
+            const demoButtons = document.querySelectorAll('.alert-button');
+            demoButtons.forEach(button => {
+                button.addEventListener('click', function (e) {
+                    e.preventDefault(); // Prevent actual navigation or call
+                    alert('This is a demo feature.');
+                });
+            });
+        });
+    </script>
+
+    <div class="alert-box">
+        <div class="alert-status"><strong>Recommended Action:</strong></div>
+
+        {% if status.label == 'normal' %}
+            <div class="alert-action">
+                <span class="alert-icon">✅</span>
+                <div class="alert-text">All clear – No action needed.</div>
+            </div>
+        {% elif status.label == 'abuse' %}
+            <div class="alert-action">
+                <span class="alert-icon">🚨</span>
+                <div class="alert-text">Suspected Abuse – Alert authorities.</div>
+                <a href="tel:911" class="alert-button">Call Now</a>
+            </div>
+        {% elif status.label == 'arrest' %}
+            <div class="alert-action">
+                <span class="alert-icon">🚓</span>
+                <div class="alert-text">Arrest in Progress – Notify police.</div>
+                <a href="tel:911" class="alert-button">Contact Police</a>
+            </div>
+        {% elif status.label == 'arson' %}
+            <div class="alert-action">
+                <span class="alert-icon">🔥</span>
+                <div class="alert-text">Possible Arson – Call fire department.</div>
+                <a href="tel:911" class="alert-button">Call Fire Dept</a>
+            </div>
+        {% elif status.label == 'assault' %}
+            <div class="alert-action">
+                <span class="alert-icon">👊</span>
+                <div class="alert-text">Assault Detected – Contact law enforcement.</div>
+                <a href="tel:911" class="alert-button">Report Assault</a>
+            </div>
+        {% elif status.label in ['accident', 'car crash'] %}
+            <div class="alert-action">
+                <span class="alert-icon">🚑</span>
+                <div class="alert-text">Accident Reported – Request medical help.</div>
+                <a href="tel:911" class="alert-button">Call EMS</a>
+            </div>
+        {% elif status.label == 'burglary' %}
+            <div class="alert-action">
+                <span class="alert-icon">🏠🔓</span>
+                <div class="alert-text">Burglary Suspected – Notify police.</div>
+                <a href="tel:911" class="alert-button">Report Burglary</a>
+            </div>
+        {% elif status.label == 'explosion' %}
+            <div class="alert-action">
+                <span class="alert-icon">💥</span>
+                <div class="alert-text">Explosion Detected – Emergency response needed.</div>
+                <a href="tel:911" class="alert-button">Emergency Call</a>
+            </div>
+        {% elif status.label == 'fighting' %}
+            <div class="alert-action">
+                <span class="alert-icon">🤼</span>
+                <div class="alert-text">Active Fight – Intervene or contact police.</div>
+                <a href="tel:911" class="alert-button">Call Police</a>
+            </div>
+        {% elif status.label == 'robbery' %}
+            <div class="alert-action">
+                <span class="alert-icon">🏦💰</span>
+                <div class="alert-text">Robbery in Progress – Immediate police response required.</div>
+                <a href="tel:911" class="alert-button">Dial 911</a>
+            </div>
+        {% elif status.label == 'shooting' %}
+            <div class="alert-action">
+                <span class="alert-icon">🔫</span>
+                <div class="alert-text">Gunfire Detected – High alert, call emergency services.</div>
+                <a href="tel:911" class="alert-button">Emergency Call</a>
+            </div>
+        {% elif status.label == 'stealing' %}
+            <div class="alert-action">
+                <span class="alert-icon">🛍️💸</span>
+                <div class="alert-text">Theft Detected – Report incident.</div>
+                <a href="#" class="alert-button">File Report</a>
+            </div>
+        {% elif status.label == 'shoplifting' %}
+            <div class="alert-action">
+                <span class="alert-icon">🛒💸</span>
+                <div class="alert-text">Shoplifting Detected – Notify security.</div>
+                <a href="#" class="alert-button">Notify Security</a>
+            </div>
+        {% elif status.label == 'vandalism' %}
+            <div class="alert-action">
+                <span class="alert-icon">🎨🧱</span>
+                <div class="alert-text">Vandalism Observed – Document and report.</div>
+                <a href="#" class="alert-button">Submit Report</a>
+            </div>
+        {% else %}
+            <div class="alert-action">
+                <span class="alert-icon">⚠️</span>
+                <div class="alert-text">Unknown Activity – Review surveillance footage.</div>
+                <a href="/review-footage" class="alert-button">Review Now</a>
+            </div>
+        {% endif %}
+    </div>
 </div>
