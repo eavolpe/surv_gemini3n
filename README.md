@@ -1,39 +1,20 @@
-## AI Residential Security and Government response 
-## Run the following code to install ollama
-https://ai.google.dev/gemma/docs/integrations/ollama
+# 🛰️ Gemini Vision
 
+**Gemini Vision** is an AI-powered surveillance and rapid response toolkit built with **Gemma 3n**. It is designed to support government agencies in monitoring visual data, performing intelligent searches, and accelerating operational decisions.
 
-## Main ideas
-Submission for The Gemma 3n Impact Challenge
+> ⚠️ **Authorized Use Only:** This software is intended strictly for official surveillance and public safety purposes.
 
-* Private first camera surveillance 
-* Upload lists of cameras ip and connection 
-* Test on the dataset - with true labels 
+---
 
-* Make search easy, classify objects or specific parts, there was a dog, query with natural language 
-* Add cammera location programmatically, and the edge detects for fast inference 
-* On premise, reducing crime is the main focus of governments budgets, locally preserving privacy 
-* OLlama to run locally and in parallel 
-* https://www.crcv.ucf.edu/projects/real-world/
+## 📦 Features
 
+- 🎯 AI-powered visual analysis (via Gemma 3n)
+- 🔍 Advanced entity and keyword search
+- 🗂️ Auto-generated folder templates for mission logs and data categorization
+- 🧠 Real-time threat detection and alerting pipeline
+- 🖼️ Clean, human-readable output reports and summaries
 
-Edge frameworks;
-* https://ai.google.dev/edge/litert
-
-
-1. Data set
-2. Download and host model play with output 
-3. Check benchmark, and create benchmark pipeline 
-
-
-
-
-Ideas:
-* https://github.com/google-gemini/gemma-cookbook/blob/main/Gemma/%5BGemma_2%5DDeploy_with_vLLM.ipynb
-* https://ai.google.dev/gemma/docs/capabilities/vision/video-understanding
-* http://insecam.org/en/view/995623/
-* https://huggingface.co/google/gemma-3n-E4B-it
-* https://cloud.google.com/run/docs/tutorials/gpu-gemma-with-ollama
+---
 
 
 
