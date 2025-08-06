@@ -1,4 +1,4 @@
-# Technical Writeup: Fine-Tuning Gemma 3n for AI-Powered Security Surveillance
+# Fine-Tuning Gemma 3n for AI-Powered Security Surveillance
 
 ## Executive Summary
 
@@ -157,6 +157,47 @@ model = FastVisionModel.get_peft_model(
     target_modules=["q_proj", "k_proj", "v_proj", "o_proj"]
 )
 ```
+
+## Multimodal Embedding Extraction with Gemma-3n
+
+To enable cross-modal retrieval, we implemented a custom wrapper around the HuggingFace `Gemma3nForConditionalGeneration` model, using it to extract embeddings from both images and text in a shared representation space.
+
+### Objective
+
+The goal was to obtain dense vectors from the model's vision and language towers such that similarity between them (e.g., cosine distance) would reflect semantic alignment — a key capability for tasks like image-to-text retrieval.
+
+### Implementation Details
+
+- **Image Embeddings**  
+  Images were passed through the model’s `vision_tower`, followed by **global average pooling** across spatial dimensions (`[2048, 16, 16] → [2048]`). When available, the model’s internal `vision_projector` was used to project these vectors into the same dimensional space as text embeddings (typically 4096-D).
+
+- **Text Embeddings**  
+  Text inputs were processed using `Gemma3nProcessor`, tokenized, and passed through the language model. We extracted the final hidden layer and applied **mean pooling across the sequence length** to obtain a single 4096-D embedding per input.
+
+- **Similarity Computation**  
+  Cosine similarity was used to compare image and text embeddings for retrieval tasks.
+
+### Challenges Encountered
+
+1. **NaN Outputs in Vision Embeddings**  
+   Initial extraction attempts in `torch.float16` led to NaN values due to overflow in the MobileNetv5-based convolutional layers. This occurred because FP16 accumulation lacks sufficient numeric range on consumer GPUs.
+
+   **Solution**: We patched the model's vision forward pass to run under `torch.cuda.amp.autocast(dtype=torch.float32)`. This upcasts computations without increasing memory usage or model size.
+
+2. **Dimensional Mismatch Between Modalities**  
+   Raw outputs from the vision tower were 4D (`[B, 2048, 16, 16]`) while text embeddings were 2D (`[B, 4096]`). Direct comparison caused runtime errors.
+
+   **Solution**: We applied global average pooling to the vision outputs and used the model’s built-in projector when needed to match text dimensions. Text embeddings were also mean-pooled over tokens before storage.
+
+3. **Shape Errors in Serialized Embeddings**  
+   In some cases, unpooled text embeddings (`[B, seq_len, dim]`) were inadvertently saved, leading to further mismatches.
+
+   **Solution**: We ensured that all embeddings were pooled and normalized before serialization.
+
+### Outcome
+
+After resolving these issues, we successfully extracted meaningful multimodal embeddings from Gemma-3n and computed cross-modal similarity using cosine distance. The resulting system enables accurate and efficient text-to-image and image-to-text retrieval in a shared semantic space.
+
 
 ### **Local Deployment & Edge Optimization**
 - **Ollama Integration**: Custom Modelfiles enabled local inference without cloud dependencies
