@@ -35,8 +35,6 @@ We recommend using [uv](https://github.com/astral-sh/uv) for fast, reliable Pyth
 *uv* is a drop-in replacement for pip and venv, providing faster installs and isolated environments. For more details, see the [uv documentation](https://github.com/astral-sh/uv).
 
 
-### PENDING THE REST OF THE LOCAL SETUP
-
 
 ## 📊 Dataset & Evaluation
 
